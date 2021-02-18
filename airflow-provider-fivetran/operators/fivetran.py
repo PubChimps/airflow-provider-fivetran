@@ -21,11 +21,11 @@ class FivetranOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self, 
-		             api_key=None,
-		             api_secret=None,
-		             connector_id=None, 
-		             poll_status_every_n_seconds: int = 15,
-		             **kwargs):
+		 api_key=None,
+		 api_secret=None,
+		 connector_id=None, 
+		 poll_status_every_n_seconds: int = 15,
+		 **kwargs):
         """
         An invocation of `run` will attempt to start a sync job for the specified `connector_id`. `run`
         will poll Fivetran for connector status, and will only complete when the sync has completed or
@@ -40,7 +40,7 @@ class FivetranOperator(BaseOperator):
             connector_id (str) and succeeded_at (timestamp str)
         """
         self.connector_id = connector_id
-	      super().__init__(**kwargs)
+        super().__init__(**kwargs)
 	
 
 
