@@ -145,7 +145,7 @@ class FivetranOperator(BaseOperator):
             # Capture the transition from 'scheduled' to 'syncing' or 'rescheduled',
             # and then back to 'scheduled' on completion.
             sync_state = current_details["status"]["sync_state"]
-            self.logger.info(
+            log.info(
                 'Connector "{}" current sync_state = {}'.format(
                     self.connector_id, sync_state
                 )
