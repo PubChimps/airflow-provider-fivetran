@@ -2,7 +2,7 @@ import os
 import airflow
 from airflow import DAG
 from airflow.models import Variable
-from dependencies.fivetran import FivetranOperator
+from fivetran_provider.operators.fivetran import FivetranOperator
 
 default_args = {
     "owner": "Airflow",
