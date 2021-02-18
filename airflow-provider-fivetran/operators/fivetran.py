@@ -40,18 +40,20 @@ class FivetranOperator(BaseOperator):
             connector_id (str) and succeeded_at (timestamp str)
         """
         self.connector_id = connector_id
+	self.api_key = api_key
+	self.api_secret = api_secret
         super().__init__(**kwargs)
 	
 
 
-        if not connector_id:
+        if not self.connector_id:
             raise ValueError("Value for parameter `connector_id` must be provided.")
-        if not api_key:
+        if not self.api_key:
             raise ValueError("Value for parameter `api_key` must be provided.")
-        if not api_secret:
+        if not self.api_secret:
             raise ValueError("Value for parameter `api_secret` must be provided.")
     
-    def parse_timestamp(api_time: str):
+    def parse_timestamp(api_time):
             """Returns either the pendulum-parsed actual timestamp or
             a very out-of-date timestamp if not set
             """
@@ -60,15 +62,15 @@ class FivetranOperator(BaseOperator):
                 if api_time is not None
                 else pendulum.from_timestamp(-1)
             )
-    def execute(self, connector_id)
+    def execute(self, context)
 
         URL_CONNECTOR: str = "https://api.fivetran.com/v1/connectors/{}".format(
-            connector_id
+            self.connector_id
         )
 
         log.info(
             "Attempting start of Fivetran connector {}, sleep time set to {} seconds.".format(
-                connector_id, poll_status_every_n_seconds
+                self.connector_id, poll_status_every_n_seconds
             )
         )
 
@@ -108,14 +110,14 @@ class FivetranOperator(BaseOperator):
             URL_CONNECTOR,
             data=json.dumps({"schedule_type": "manual"}),
             headers={"Content-Type": "application/json;version=2"},
-            auth=(api_key, api_secret),
+            auth=(self.api_key, self.api_secret),
         )
         # Start connector sync
-        resp = session.post(URL_CONNECTOR + "/force", auth=(api_key, api_secret))
+        resp = session.post(URL_CONNECTOR + "/force", auth=(self.api_key, self.api_secret))
 
         loop: bool = True
         while loop:
-            resp = session.get(URL_CONNECTOR, auth=(api_key, api_secret))
+            resp = session.get(URL_CONNECTOR, auth=(self.api_key, self.api_secret))
             current_details = resp.json()["data"]
             # Failsafe, in case we missed a state transition – it is possible with a long enough
             # `poll_status_every_n_seconds` we could completely miss the 'syncing' state
@@ -129,7 +131,7 @@ class FivetranOperator(BaseOperator):
             if failed_at > previous_completed_at:
                 raise ValueError(
                     'Fivetran sync for connector "{}" failed; please see logs at {}'.format(
-                        connector_id, URL_LOGS
+                        self.connector_id, URL_LOGS
                     )
                 )
             # Started sync will spend some time in the 'scheduled' state before
@@ -139,7 +141,7 @@ class FivetranOperator(BaseOperator):
             sync_state = current_details["status"]["sync_state"]
             self.logger.info(
                 'Connector "{}" current sync_state = {}'.format(
-                    connector_id, sync_state
+                    self.connector_id, sync_state
                 )
             )
             if current_completed_at > previous_completed_at:
@@ -149,5 +151,5 @@ class FivetranOperator(BaseOperator):
 
         return {
             "succeeded_at": succeeded_at.to_iso8601_string(),
-            "connector_id": connector_id,
+            "connector_id": self.connector_id,
         }
