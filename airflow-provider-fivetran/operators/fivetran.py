@@ -40,8 +40,8 @@ class FivetranOperator(BaseOperator):
             connector_id (str) and succeeded_at (timestamp str)
         """
         self.connector_id = connector_id
-	self.api_key = api_key
-	self.api_secret = api_secret
+        self.api_key = api_key
+        self.api_secret = api_secret
         super().__init__(**kwargs)
 	
 
@@ -62,7 +62,7 @@ class FivetranOperator(BaseOperator):
                 if api_time is not None
                 else pendulum.from_timestamp(-1)
             )
-    def execute(self, context)
+    def execute(self, context):
 
         URL_CONNECTOR: str = "https://api.fivetran.com/v1/connectors/{}".format(
             self.connector_id
