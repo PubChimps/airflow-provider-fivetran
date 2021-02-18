@@ -16,7 +16,7 @@ dag = DAG(
 
 fivetran_sync = FivetranOperator(
     api_key=Variable.get("fivetran-key"),
-    api_secret=Variable.get("fivetran-secret")',
+    api_secret=Variable.get("fivetran-secret"),
     connector_id=Variable.get("connector_id"),
     dag=dag
 )
