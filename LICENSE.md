@@ -1,1 +1,0 @@
-MIT or Apache preferred
