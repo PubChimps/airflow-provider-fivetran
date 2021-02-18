@@ -39,9 +39,10 @@ class FivetranOperator(BaseOperator):
         Returns:
             connector_id (str) and succeeded_at (timestamp str)
         """
-        self.connector_id = connector_id
         self.api_key = api_key
         self.api_secret = api_secret
+        self.connector_id = connector_id
+        self.poll_status_every_n_seconds = poll_status_every_n_seconds
         super().__init__(**kwargs)
 	
 
@@ -70,7 +71,7 @@ class FivetranOperator(BaseOperator):
 
         log.info(
             "Attempting start of Fivetran connector {}, sleep time set to {} seconds.".format(
-                self.connector_id, poll_status_every_n_seconds
+                self.connector_id, self.poll_status_every_n_seconds
             )
         )
 
