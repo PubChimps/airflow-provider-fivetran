@@ -57,7 +57,7 @@ class FivetranOperator(BaseOperator):
             raise ValueError("Value for parameter `api_secret` must be provided.")
   
 
-    def parse_timestamp(api_time):
+    def parse_timestamp(self, api_time):
             """Returns either the pendulum-parsed actual timestamp or
             a very out-of-date timestamp if not set
             """
