@@ -92,7 +92,7 @@ class FivetranOperator(BaseOperator):
                 'Fivetran connector "{}" not correctly configured, status: {}; '
                 + "please complete setup at {}"
             )
-            raise ValueError(EXC_SETUP.format(connector_id, setup_state, URL_SETUP))
+            raise ValueError(EXC_SETUP.format(self.connector_id, setup_state, URL_SETUP))
         # We need to know the previous job's completion time to know if the job succeeded or failed
         succeeded_at = parse_timestamp(connector_details["succeeded_at"])
         failed_at = parse_timestamp(connector_details["failed_at"])
