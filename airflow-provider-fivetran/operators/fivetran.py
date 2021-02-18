@@ -79,7 +79,7 @@ class FivetranOperator(BaseOperator):
         session = requests.Session()
         session.hooks = {"response": lambda r, *args, **kwargs: r.raise_for_status()}
         # Make sure connector configuration has been completed successfully and is not broken.
-        resp = session.get(URL_CONNECTOR, auth=(api_key, api_secret))
+        resp = session.get(URL_CONNECTOR, auth=(self.api_key, self.api_secret))
         connector_details = resp.json()["data"]
         URL_LOGS = "https://fivetran.com/dashboard/connectors/{}/{}/logs".format(
             connector_details["service"], connector_details["schema"]
