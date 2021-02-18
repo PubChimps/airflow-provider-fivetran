@@ -11,6 +11,7 @@ import pendulum
 
 log = logging.getLogger(__name__)
 
+
 class FivetranOperator(BaseOperator):
     """
     Insert your operator documentation here. This operator inherits from the BaseOperator and prints "Hello World!" and whatever string that I choose to pass as an argument.
@@ -18,6 +19,7 @@ class FivetranOperator(BaseOperator):
     Here is where we'll include our params
     :param str my_operator_param: A random string to pass to the operator that will be printed after "Hello World!"
     """
+
 
     @apply_defaults
     def __init__(self, 
@@ -53,7 +55,8 @@ class FivetranOperator(BaseOperator):
             raise ValueError("Value for parameter `api_key` must be provided.")
         if not self.api_secret:
             raise ValueError("Value for parameter `api_secret` must be provided.")
-    
+  
+
     def parse_timestamp(api_time):
             """Returns either the pendulum-parsed actual timestamp or
             a very out-of-date timestamp if not set
@@ -63,6 +66,8 @@ class FivetranOperator(BaseOperator):
                 if api_time is not None
                 else pendulum.from_timestamp(-1)
             )
+   
+
     def execute(self, context):
 
         URL_CONNECTOR: str = "https://api.fivetran.com/v1/connectors/{}".format(
@@ -95,8 +100,8 @@ class FivetranOperator(BaseOperator):
             )
             raise ValueError(EXC_SETUP.format(self.connector_id, setup_state, URL_SETUP))
         # We need to know the previous job's completion time to know if the job succeeded or failed
-        succeeded_at = parse_timestamp(connector_details["succeeded_at"])
-        failed_at = parse_timestamp(connector_details["failed_at"])
+        succeeded_at = self.parse_timestamp(connector_details["succeeded_at"])
+        failed_at = self.parse_timestamp(connector_details["failed_at"])
         previous_completed_at = succeeded_at if succeeded_at > failed_at else failed_at
         # URL for connector logs within the UI
         log.info(
@@ -122,8 +127,8 @@ class FivetranOperator(BaseOperator):
             current_details = resp.json()["data"]
             # Failsafe, in case we missed a state transition – it is possible with a long enough
             # `poll_status_every_n_seconds` we could completely miss the 'syncing' state
-            succeeded_at = parse_timestamp(current_details["succeeded_at"])
-            failed_at = parse_timestamp(current_details["failed_at"])
+            succeeded_at = self.parse_timestamp(current_details["succeeded_at"])
+            failed_at = self.parse_timestamp(current_details["failed_at"])
             current_completed_at = (
                 succeeded_at if succeeded_at > failed_at else failed_at
             )
