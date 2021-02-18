@@ -148,7 +148,7 @@ class FivetranOperator(BaseOperator):
             if current_completed_at > previous_completed_at:
                 loop = False
             else:
-                time.sleep(poll_status_every_n_seconds)
+                time.sleep(self.poll_status_every_n_seconds)
 
         return {
             "succeeded_at": succeeded_at.to_iso8601_string(),
